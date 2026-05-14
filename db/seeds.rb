@@ -1,4 +1,3 @@
-
 puts "Creating data..."
 
 # CLEAN DB
@@ -7,10 +6,45 @@ Appointment.destroy_all
 Pet.destroy_all
 Vet.destroy_all
 Owner.destroy_all
+User.destroy_all
+
+# ======================
+# USERS
+# ======================
+
+admin_user = User.create!(
+  first_name: "Admin",
+  last_name: "User",
+  email: "admin@vetclinic.com",
+  password: "password123",
+  password_confirmation: "password123",
+  role: :admin
+)
+
+vet_user = User.create!(
+  first_name: "Vet",
+  last_name: "User",
+  email: "vet@vetclinic.com",
+  password: "password123",
+  password_confirmation: "password123",
+  role: :vet
+)
+
+owner_user = User.create!(
+  first_name: "Owner",
+  last_name: "User",
+  email: "owner@vetclinic.com",
+  password: "password123",
+  password_confirmation: "password123",
+  role: :owner
+)
+
+puts "Users created successfully!"
 
 # ======================
 # OWNERS
 # ======================
+
 owner1 = Owner.create!(
   first_name: "Juan",
   last_name: "Perez",
@@ -38,6 +72,7 @@ owner3 = Owner.create!(
 # ======================
 # PETS
 # ======================
+
 pet1 = owner1.pets.create!(
   name: "Firulais",
   species: "dog",
@@ -65,10 +100,12 @@ pet3 = owner2.pets.create!(
 # ======================
 # ATTACH PHOTOS
 # ======================
+
 pets = [pet1, pet2, pet3]
 files = ["dog.jpg", "cat.jpg", "rabbit.jpg"]
 
 pets.each_with_index do |pet, index|
+
   path = Rails.root.join("db/seeds/pets/#{files[index]}")
 
   if File.exist?(path)
@@ -92,6 +129,7 @@ pets.each_with_index do |pet, index|
     pet.save!
 
     puts "Photo attached to #{pet.name}"
+
   else
     puts "⚠️ File not found: #{path}"
   end
@@ -100,6 +138,7 @@ end
 # ======================
 # VETS
 # ======================
+
 vet1 = Vet.create!(
   first_name: "Ana",
   last_name: "Diaz",
@@ -117,6 +156,7 @@ vet2 = Vet.create!(
 # ======================
 # APPOINTMENTS
 # ======================
+
 app1 = Appointment.create!(
   pet: pet1,
   vet: vet1,

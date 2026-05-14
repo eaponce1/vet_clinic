@@ -1,40 +1,71 @@
-<h1 class="mb-4 fw-bold">Owners</h1>
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+  <h1 class="fw-bold mb-0">
+    Owners
+  </h1>
+
+  <%= link_to "New Owner",
+              new_owner_path,
+              class: "btn btn-primary" %>
+
+</div>
 
 <div class="table-responsive">
+
   <table class="table table-striped table-hover">
+
     <thead>
+
       <tr>
         <th>Name</th>
         <th>Email</th>
         <th>Phone</th>
         <th class="text-center">Pets</th>
       </tr>
+
     </thead>
 
     <tbody>
+
       <% @owners.each do |owner| %>
+
         <tr>
 
-          <!-- Name -->
+          <!-- NAME -->
           <td>
-            <%= link_to "#{owner.first_name} #{owner.last_name}", owner %>
+
+            <%= link_to "#{owner.first_name} #{owner.last_name}",
+                        owner %>
+
           </td>
 
-          <!-- Email -->
-          <td><%= owner.email %></td>
+          <!-- EMAIL -->
+          <td>
+            <%= owner.email %>
+          </td>
 
-          <!-- Phone -->
-          <td><%= owner.phone %></td>
+          <!-- PHONE -->
+          <td>
+            <%= owner.phone %>
+          </td>
 
-          <!-- Pets (CORREGIDO N+1) -->
+          <!-- PETS -->
           <td class="text-center">
+
             <span class="badge bg-dark">
+
               <%= owner.pets.size %>
+
             </span>
+
           </td>
 
         </tr>
+
       <% end %>
+
     </tbody>
+
   </table>
+
 </div>

@@ -1,25 +1,25 @@
 Rails.application.routes.draw do
+  devise_for :users
 
   # ROOT
   root "owners#index"
 
-  # OWNERS 
+  # OWNERS
   resources :owners
 
-  # PETS 
+  # PETS
   resources :pets
 
-  # VETS 
+  # VETS
   resources :vets
 
-  # APPOINTMENTS 
+  # APPOINTMENTS
   resources :appointments do
     collection do
       get :past
     end
 
-    # TREATMENTS ANIDADOS 
+    # TREATMENTS ANIDADOS
     resources :treatments, except: [:index, :show]
   end
-
 end
