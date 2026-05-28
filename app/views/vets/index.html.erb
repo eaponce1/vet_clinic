@@ -1,9 +1,23 @@
-<%= link_to "New Vet", new_vet_path, class: "btn btn-primary mb-3" %>
+<div class="d-flex justify-content-between align-items-center mb-4">
 
-<h1 class="mb-4 fw-bold">Vets</h1>
+  <h1 class="mb-0 fw-bold">
+    Vets
+  </h1>
+
+  <% if policy(Vet).new? %>
+
+    <%= link_to "New Vet",
+                new_vet_path,
+                class: "btn btn-primary" %>
+
+  <% end %>
+
+</div>
 
 <div class="table-responsive">
+
   <table class="table table-striped table-hover align-middle">
+
     <thead class="table-dark">
       <tr>
         <th>Name</th>
@@ -14,39 +28,82 @@
     </thead>
 
     <tbody>
+
       <% @vets.each do |vet| %>
+
         <tr>
 
+          <!-- NAME -->
           <td>
-            <%= link_to "#{vet.first_name} #{vet.last_name}", vet %>
+
+            <% if policy(vet).show? %>
+
+              <%= link_to "#{vet.first_name} #{vet.last_name}",
+                          vet %>
+
+            <% else %>
+
+              <%= "#{vet.first_name} #{vet.last_name}" %>
+
+            <% end %>
+
           </td>
 
-          <td><%= vet.email %></td>
-
+          <!-- EMAIL -->
           <td>
+            <%= vet.email %>
+          </td>
+
+          <!-- SPECIALIZATION -->
+          <td>
+
             <span class="badge bg-info text-dark">
               <%= vet.specialization %>
             </span>
+
           </td>
 
+          <!-- ACTIONS -->
           <td class="text-center">
+
             <div class="btn-group" role="group">
 
-              <%= link_to "Show", vet, class: "btn btn-sm btn-info text-white" %>
+              <% if policy(vet).show? %>
 
-              <%= link_to "Edit", edit_vet_path(vet), class: "btn btn-sm btn-warning" %>
+                <%= link_to "Show",
+                            vet,
+                            class: "btn btn-sm btn-info text-white" %>
 
-              <%= button_to "Delete",
-                  vet_path(vet),
-                  method: :delete,
-                  data: { turbo_confirm: "Are you sure?" },
-                  class: "btn btn-sm btn-danger" %>
+              <% end %>
+
+              <% if policy(vet).edit? %>
+
+                <%= link_to "Edit",
+                            edit_vet_path(vet),
+                            class: "btn btn-sm btn-warning" %>
+
+              <% end %>
+
+              <% if policy(vet).destroy? %>
+
+                <%= button_to "Delete",
+                              vet_path(vet),
+                              method: :delete,
+                              data: { turbo_confirm: "Are you sure?" },
+                              class: "btn btn-sm btn-danger" %>
+
+              <% end %>
 
             </div>
+
           </td>
 
         </tr>
+
       <% end %>
+
     </tbody>
+
   </table>
+
 </div>

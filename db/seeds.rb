@@ -50,7 +50,8 @@ owner1 = Owner.create!(
   last_name: "Perez",
   email: "juan@mail.com",
   phone: "123456",
-  address: "Santiago"
+  address: "Santiago",
+  user: owner_user
 )
 
 owner2 = Owner.create!(
@@ -143,7 +144,8 @@ vet1 = Vet.create!(
   first_name: "Ana",
   last_name: "Diaz",
   email: "ana@vet.com",
-  specialization: "General"
+  specialization: "General",
+  user: vet_user
 )
 
 vet2 = Vet.create!(

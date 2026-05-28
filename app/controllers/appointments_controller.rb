@@ -3,31 +3,39 @@ class AppointmentsController < ApplicationController
 
   # INDEX
   def index
-    @appointments = Appointment.upcoming.includes(:pet, :vet)
+    @appointments = policy_scope(
+      Appointment.upcoming.includes(:pet, :vet)
+    )
   end
 
   # PAST
   def past
-    @appointments = Appointment.past.includes(:pet, :vet)
+    @appointments = policy_scope(
+      Appointment.past.includes(:pet, :vet)
+    )
+
     render :index
   end
 
   # SHOW
   def show
-    # 👇 ESTO ES CLAVE (N+1 FIX)
     @appointment = Appointment
       .includes(:pet, :vet, treatments: [:rich_text_clinical_notes])
       .find(params[:id])
+
+    authorize @appointment
   end
 
   # NEW
   def new
     @appointment = Appointment.new
+    authorize @appointment
   end
 
   # CREATE
   def create
     @appointment = Appointment.new(appointment_params)
+    authorize @appointment
 
     if @appointment.save
       redirect_to @appointment, notice: "Appointment created successfully."
@@ -38,10 +46,13 @@ class AppointmentsController < ApplicationController
 
   # EDIT
   def edit
+    authorize @appointment
   end
 
   # UPDATE
   def update
+    authorize @appointment
+
     if @appointment.update(appointment_params)
       redirect_to @appointment, notice: "Appointment updated successfully."
     else
@@ -51,6 +62,8 @@ class AppointmentsController < ApplicationController
 
   # DESTROY
   def destroy
+    authorize @appointment
+
     @appointment.destroy
     redirect_to appointments_path, notice: "Appointment deleted."
   end
@@ -58,8 +71,9 @@ class AppointmentsController < ApplicationController
   private
 
   def set_appointment
-    
-    @appointment = Appointment.includes(:pet, :vet).find(params[:id])
+    @appointment = Appointment
+      .includes(:pet, :vet)
+      .find(params[:id])
   end
 
   def appointment_params

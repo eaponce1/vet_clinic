@@ -1,4 +1,6 @@
 class ApplicationController < ActionController::Base
+  include Pundit::Authorization
+
   allow_browser versions: :modern
   stale_when_importmap_changes
 
@@ -7,6 +9,9 @@ class ApplicationController < ActionController::Base
 
   # DEVISE STRONG PARAMETERS
   before_action :configure_permitted_parameters, if: :devise_controller?
+
+  # PUNDIT ERROR HANDLER
+  rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
   protected
 
@@ -25,6 +30,24 @@ class ApplicationController < ActionController::Base
   private
 
   def public_page?
-    controller_name == "owners" && action_name == "index"
+    false
+  end
+
+  # PUNDIT REDIRECT
+  def user_not_authorized
+
+    redirect_path =
+      if current_user&.owner?
+        owner_path(current_user.owner)
+
+      elsif current_user&.vet?
+        appointments_path
+
+      else
+        root_path
+      end
+
+    redirect_to redirect_path,
+                alert: "You are not authorized to perform this action."
   end
 end

@@ -1,4 +1,7 @@
 class Vet < ApplicationRecord
+  # ASSOCIATIONS
+  belongs_to :user, optional: true
+
   has_many :appointments, dependent: :destroy
 
   # CALLBACK

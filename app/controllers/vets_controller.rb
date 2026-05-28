@@ -3,21 +3,24 @@ class VetsController < ApplicationController
 
   # INDEX
   def index
-    @vets = Vet.includes(:appointments)
+    @vets = policy_scope(Vet.includes(:appointments))
   end
 
   # SHOW
   def show
+    authorize @vet
   end
 
   # NEW
   def new
     @vet = Vet.new
+    authorize @vet
   end
 
   # CREATE
   def create
     @vet = Vet.new(vet_params)
+    authorize @vet
 
     if @vet.save
       redirect_to @vet, notice: "Vet was successfully created."
@@ -28,10 +31,13 @@ class VetsController < ApplicationController
 
   # EDIT
   def edit
+    authorize @vet
   end
 
   # UPDATE
   def update
+    authorize @vet
+
     if @vet.update(vet_params)
       redirect_to @vet, notice: "Vet was successfully updated."
     else
@@ -41,6 +47,8 @@ class VetsController < ApplicationController
 
   # DESTROY
   def destroy
+    authorize @vet
+
     @vet.destroy
     redirect_to vets_path, notice: "Vet was successfully deleted."
   end
@@ -52,6 +60,13 @@ class VetsController < ApplicationController
   end
 
   def vet_params
-    params.require(:vet).permit(:first_name, :last_name, :email, :phone, :specialization)
+    params.require(:vet).permit(
+      :first_name,
+      :last_name,
+      :email,
+      :phone,
+      :specialization,
+      :user_id
+    )
   end
 end

@@ -5,11 +5,13 @@ class TreatmentsController < ApplicationController
   # NEW
   def new
     @treatment = @appointment.treatments.build
+    authorize @treatment
   end
 
   # CREATE
   def create
     @treatment = @appointment.treatments.build(treatment_params)
+    authorize @treatment
 
     if @treatment.save
       redirect_to @appointment, notice: "Treatment created successfully."
@@ -20,10 +22,13 @@ class TreatmentsController < ApplicationController
 
   # EDIT
   def edit
+    authorize @treatment
   end
 
   # UPDATE
   def update
+    authorize @treatment
+
     if @treatment.update(treatment_params)
       redirect_to @appointment, notice: "Treatment updated successfully."
     else
@@ -33,6 +38,8 @@ class TreatmentsController < ApplicationController
 
   # DESTROY
   def destroy
+    authorize @treatment
+
     @treatment.destroy
     redirect_to @appointment, notice: "Treatment deleted."
   end
@@ -47,12 +54,12 @@ class TreatmentsController < ApplicationController
     @treatment = @appointment.treatments.find(params[:id])
   end
 
-  # Action Text
+  # ACTION TEXT
   def treatment_params
     params.require(:treatment).permit(
       :name,
       :administered_at,
-      :clinical_notes   
+      :clinical_notes
     )
   end
 end

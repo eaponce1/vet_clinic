@@ -6,9 +6,12 @@ class User < ApplicationRecord
     admin: 2
   }
 
+  # ASSOCIATIONS
+  has_one :owner, dependent: :nullify
+  has_one :vet, dependent: :nullify
+
   # DEVISE MODULES
   devise :database_authenticatable,
-         :registerable,
          :recoverable,
          :rememberable,
          :validatable
@@ -23,4 +26,3 @@ class User < ApplicationRecord
     "#{first_name} #{last_name}"
   end
 end
-

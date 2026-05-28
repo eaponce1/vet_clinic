@@ -4,9 +4,13 @@
     Owners
   </h1>
 
-  <%= link_to "New Owner",
-              new_owner_path,
-              class: "btn btn-primary" %>
+  <% if policy(Owner).new? %>
+
+    <%= link_to "New Owner",
+                new_owner_path,
+                class: "btn btn-primary" %>
+
+  <% end %>
 
 </div>
 
@@ -34,8 +38,16 @@
           <!-- NAME -->
           <td>
 
-            <%= link_to "#{owner.first_name} #{owner.last_name}",
-                        owner %>
+            <% if policy(owner).show? %>
+
+              <%= link_to "#{owner.first_name} #{owner.last_name}",
+                          owner %>
+
+            <% else %>
+
+              <%= "#{owner.first_name} #{owner.last_name}" %>
+
+            <% end %>
 
           </td>
 

@@ -1,15 +1,85 @@
-# Vet Clinic - Lab 8
+# Vet Clinic - Lab 9
 
 Rails application for managing pets, owners, vets, appointments, and treatments.
 
-This project includes:
+This version implements authentication and authorization using Devise and Pundit.
 
-- Devise authentication
-- User roles with enum
-- Active Storage for pet photo uploads
-- Action Text for clinical notes
-- Bootstrap responsive UI
-- N+1 query optimizations
+---
+
+# Features
+
+## Authentication
+
+Implemented with Devise.
+
+Features:
+
+- Login
+- Logout
+- Password recovery
+- Protected resources
+- Dynamic navigation based on user role
+
+User registration has been disabled.
+
+---
+
+## Authorization
+
+Implemented with Pundit.
+
+Authorization is enforced through:
+
+- Policies
+- Policy scopes
+- Role-based permissions
+- Controller authorization checks
+
+Users can only access resources allowed by their role.
+
+Unauthorized access redirects the user with an error message.
+
+---
+
+# User Roles
+
+The application includes three user roles:
+
+```ruby
+enum :role, {
+  owner: 0,
+  vet: 1,
+  admin: 2
+}
+```
+
+---
+
+# Authorization Matrix
+
+| Resource | Admin | Owner | Vet |
+|-----------|--------|--------|--------|
+| Owners Index | ✅ | ❌ | ✅ |
+| Owner Profile | ✅ | Own Only | ✅ |
+| Create Owner | ✅ | ❌ | ❌ |
+| Edit Owner | ✅ | Own Only | ❌ |
+| Delete Owner | ✅ | ❌ | ❌ |
+| Pets Index | ✅ | Own Only | ✅ |
+| Pet Details | ✅ | Own Only | ✅ |
+| Create Pet | ✅ | ✅ | ❌ |
+| Edit Pet | ✅ | Own Only | ❌ |
+| Delete Pet | ✅ | ❌ | ❌ |
+| Vets Index | ✅ | ✅ | ✅ |
+| Vet Details | ✅ | ✅ | ✅ |
+| Create Vet | ✅ | ❌ | ❌ |
+| Edit Vet | ✅ | Own Profile | ❌ |
+| Delete Vet | ✅ | ❌ | ❌ |
+| Appointments Index | ✅ | Own Pets Only | Assigned Only |
+| Appointment Details | ✅ | Own Pets Only | Assigned Only |
+| Create Appointment | ✅ | ✅ | ✅ |
+| Edit Appointment | ✅ | ❌ | Assigned Only |
+| Delete Appointment | ✅ | ❌ | Assigned Only |
+| Treatments | ✅ | Own Pets Only | Assigned Only |
 
 ---
 
@@ -22,25 +92,26 @@ This project includes:
 
 ---
 
-# Setup Instructions
+# Installation
 
-Clone the repository:
+Clone repository:
 
 ```bash
 git clone <repository_url>
 cd vet_clinic
-````
+```
 
-Install gems:
+Install dependencies:
 
 ```bash
 bundle install
 ```
 
-Create database and run migrations:
+Create database:
 
 ```bash
-bin/rails db:create db:migrate
+bin/rails db:create
+bin/rails db:migrate
 ```
 
 Load seed data:
@@ -49,58 +120,16 @@ Load seed data:
 bin/rails db:seed
 ```
 
-Run the server:
+Run server:
 
 ```bash
 bin/dev
 ```
 
-Open in browser:
+Open:
 
 ```text
 http://localhost:3000
-```
-
----
-
-# Authentication
-
-This project uses Devise for authentication.
-
-Installed with:
-
-```bash
-bin/rails generate devise:install
-bin/rails generate devise User
-```
-
-Features implemented:
-
-* User registration
-* Login / Logout
-* Edit account
-* Password recovery
-* Protected routes
-* Dynamic navbar
-
----
-
-# User Roles
-
-Users include an enum role system:
-
-* owner
-* vet
-* admin
-
-Implemented in:
-
-```ruby
-enum :role, {
-  owner: 0,
-  vet: 1,
-  admin: 2
-}
 ```
 
 ---
@@ -113,7 +142,7 @@ After running:
 bin/rails db:seed
 ```
 
-You can log in with:
+Use the following credentials.
 
 ## Admin
 
@@ -122,12 +151,27 @@ Email: admin@vetclinic.com
 Password: password123
 ```
 
+Capabilities:
+
+- Full access to all resources
+
+---
+
 ## Vet
 
 ```text
 Email: vet@vetclinic.com
 Password: password123
 ```
+
+Capabilities:
+
+- View assigned appointments
+- Manage assigned treatments
+- View owners and pets
+- Update own veterinarian profile
+
+---
 
 ## Owner
 
@@ -136,69 +180,62 @@ Email: owner@vetclinic.com
 Password: password123
 ```
 
+Capabilities:
+
+- View own owner profile
+- View own pets
+- Create pets
+- View appointments for own pets
+- View treatments for own pets
+
+---
+
+# Pundit Policies
+
+The application uses the following policies:
+
+- OwnerPolicy
+- PetPolicy
+- VetPolicy
+- AppointmentPolicy
+- TreatmentPolicy
+
+Each policy defines:
+
+- Authorization rules
+- Role permissions
+- Resource visibility
+- Scope restrictions
+
 ---
 
 # Active Storage
 
-This project uses Active Storage for pet photo uploads.
-
-Installed with:
-
-```bash
-bin/rails active_storage:install
-```
+Used for pet photo uploads.
 
 Features:
 
-* Photo uploads
-* Image previews
-* Image validation
-* Responsive image rendering
+- Photo uploads
+- Image validation
+- Image previews
 
 ---
 
 # Action Text
 
-This project uses Action Text for rich clinical notes in treatments.
-
-Installed with:
-
-```bash
-bin/rails action_text:install
-```
+Used for treatment clinical notes.
 
 Features:
 
-* Rich formatted text
-* Medical notes
-* HTML rendering
-* Rich text editor
-
----
-
-# Image Processing
-
-This project uses the `image_processing` gem and `libvips` for image variants.
-
-Install libvips:
-
-## Ubuntu / WSL
-
-```bash
-sudo apt install libvips
-```
-
-## Windows
-
-```bash
-winget install libvips
-```
+- Rich text editing
+- Formatted clinical notes
+- HTML content rendering
 
 ---
 
 # Performance Optimizations
 
-N+1 query issues were fixed using:
+N+1 query problems were addressed using:
 
 ```ruby
 includes(...)
@@ -206,69 +243,41 @@ includes(...)
 
 Examples:
 
-* Owners with pets
-* Pets with owners
-* Appointments with pets and vets
-* Treatments with Action Text preload
+- Owners with pets
+- Pets with owners
+- Appointments with pets and vets
+- Treatments with Action Text
 
 ---
 
 # Technologies Used
 
-* Ruby on Rails 8
-* PostgreSQL
-* Bootstrap 5
-* Devise
-* Active Storage
-* Action Text
-* Turbo
-* Stimulus
-
----
-
-# Features
-
-## Authentication
-
-* Register users
-* Login / Logout
-* Edit account
-* Password recovery
-* Protected resources
-
-## Pets
-
-* Upload pet photos
-* Photo previews
-* Image validation
-
-## Treatments
-
-* Rich clinical notes
-* HTML formatted content
-
-## Appointments
-
-* Upcoming appointments
-* Past appointments
-* Status enum support
+- Ruby on Rails 8
+- PostgreSQL
+- Bootstrap 5
+- Devise
+- Pundit
+- Active Storage
+- Action Text
+- Turbo
+- Stimulus
 
 ---
 
 # Seed Data
 
-The project includes sample:
+The project includes:
 
-* Users
-* Owners
-* Pets
-* Vets
-* Appointments
-* Treatments
-* Pet photos
-* Rich clinical notes
+- Users
+- Owners
+- Pets
+- Veterinarians
+- Appointments
+- Treatments
+- Pet photos
+- Clinical notes
 
-Run:
+Load sample data:
 
 ```bash
 bin/rails db:seed

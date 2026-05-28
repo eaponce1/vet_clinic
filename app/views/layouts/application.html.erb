@@ -40,21 +40,45 @@
           <!-- LEFT LINKS -->
           <ul class="navbar-nav me-auto">
 
-            <li class="nav-item">
-              <%= link_to "Owners", owners_path, class: "nav-link mx-2" %>
-            </li>
+            <% if user_signed_in? %>
 
-            <li class="nav-item">
-              <%= link_to "Pets", pets_path, class: "nav-link mx-2" %>
-            </li>
+              <% if current_user.admin? || current_user.vet? %>
 
-            <li class="nav-item">
-              <%= link_to "Vets", vets_path, class: "nav-link mx-2" %>
-            </li>
+                <li class="nav-item">
+                  <%= link_to "Owners",
+                              owners_path,
+                              class: "nav-link mx-2" %>
+                </li>
 
-            <li class="nav-item">
-              <%= link_to "Appointments", appointments_path, class: "nav-link mx-2" %>
-            </li>
+              <% elsif current_user.owner? && current_user.owner.present? %>
+
+                <li class="nav-item">
+                  <%= link_to "My Account",
+                              owner_path(current_user.owner),
+                              class: "nav-link mx-2" %>
+                </li>
+
+              <% end %>
+
+              <li class="nav-item">
+                <%= link_to "Pets",
+                            pets_path,
+                            class: "nav-link mx-2" %>
+              </li>
+
+              <li class="nav-item">
+                <%= link_to "Vets",
+                            vets_path,
+                            class: "nav-link mx-2" %>
+              </li>
+
+              <li class="nav-item">
+                <%= link_to "Appointments",
+                            appointments_path,
+                            class: "nav-link mx-2" %>
+              </li>
+
+            <% end %>
 
           </ul>
 
@@ -83,12 +107,6 @@
               <li class="nav-item">
                 <%= link_to "Login",
                             new_user_session_path,
-                            class: "nav-link mx-2" %>
-              </li>
-
-              <li class="nav-item">
-                <%= link_to "Register",
-                            new_user_registration_path,
                             class: "nav-link mx-2" %>
               </li>
 
